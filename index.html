@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>LUSI Wiki</title>
+  <meta name="theme-color" content="#0b0f19" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">Λ</div>
+      <div class="brand-text">
+        <div class="brand-title">LUSI Wiki</div>
+        <div class="brand-sub">Chroniken • Figuren • Orte • Begriffe</div>
+      </div>
+    </div>
+
+    <button id="btnTheme" class="icon-btn" type="button" aria-label="Theme umschalten">
+      <span class="icon" aria-hidden="true">☾</span>
+    </button>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <div class="toolbar">
+        <label class="search">
+          <span class="icon" aria-hidden="true">⌕</span>
+          <input id="q" type="search" placeholder="Suchen: Lusi, Supernova, Exir…" autocomplete="off" />
+        </label>
+
+        <div class="filters">
+          <button class="chip is-active" data-filter="all" type="button">Alle</button>
+          <button class="chip" data-filter="figur" type="button">Figuren</button>
+          <button class="chip" data-filter="ort" type="button">Orte</button>
+          <button class="chip" data-filter="begriff" type="button">Begriffe</button>
+          <button class="chip" data-filter="fraktion" type="button">Fraktionen</button>
+        </div>
+      </div>
+
+      <div class="list-header">
+        <div class="muted" id="resultCount">—</div>
+        <button id="btnNew" class="btn" type="button">
+          <span class="icon" aria-hidden="true">＋</span>
+          Eintrag
+        </button>
+      </div>
+
+      <ul id="list" class="list" aria-label="Einträge"></ul>
+    </section>
+
+    <section class="panel detail" aria-live="polite">
+      <div id="emptyState" class="empty">
+        <div class="empty-card">
+          <div class="empty-title">Wähle links einen Eintrag.</div>
+          <div class="empty-text">
+            Tipp: Tippe auf <b>Eintrag</b>, um neue Wiki-Seiten anzulegen. Alles wird lokal gespeichert.
+          </div>
+        </div>
+      </div>
+
+      <article id="detail" class="detail-body hidden">
+        <div class="detail-head">
+          <div>
+            <h1 id="dTitle" class="detail-title">—</h1>
+            <div class="meta">
+              <span id="dType" class="pill">—</span>
+              <span id="dTags" class="tags"></span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="btnEdit" class="btn ghost" type="button">
+              <span class="icon" aria-hidden="true">✎</span> Bearbeiten
+            </button>
+            <button id="btnDelete" class="btn danger" type="button">
+              <span class="icon" aria-hidden="true">🗑</span> Löschen
+            </button>
+          </div>
+        </div>
+
+        <div id="dBody" class="detail-content"></div>
+
+        <div class="divider"></div>
+
+        <details class="small">
+          <summary>Infos</summary>
+          <div class="small-grid">
+            <div><span class="k">ID</span><span id="dId" class="v">—</span></div>
+            <div><span class="k">Zuletzt geändert</span><span id="dUpdated" class="v">—</span></div>
+          </div>
+        </details>
+      </article>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <dialog id="editor" class="modal">
+    <form id="form" method="dialog" class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title" id="mTitle">Eintrag</div>
+        <button class="icon-btn" value="cancel" aria-label="Schließen" type="submit">✕</button>
+      </div>
+
+      <div class="grid">
+        <label class="field">
+          <span>Titel</span>
+          <input id="fTitle" required maxlength="80" placeholder="z.B. Lusi" />
+        </label>
+
+        <label class="field">
+          <span>Typ</span>
+          <select id="fType">
+            <option value="figur">Figur</option>
+            <option value="ort">Ort</option>
+            <option value="begriff">Begriff</option>
+            <option value="fraktion">Fraktion</option>
+          </select>
+        </label>
+
+        <label class="field col2">
+          <span>Tags (mit Komma trennen)</span>
+          <input id="fTags" maxlength="120" placeholder="z.B. KI, Core, Konflikt" />
+        </label>
+
+        <label class="field col2">
+          <span>Text (Markdown-light)</span>
+          <textarea id="fBody" rows="10" placeholder="Du kannst **fett**, _kursiv_, Listen und Links schreiben."></textarea>
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn ghost" value="cancel" type="submit">Abbrechen</button>
+        <button id="btnSave" class="btn" value="default" type="submit">
+          <span class="icon" aria-hidden="true">✓</span> Speichern
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
