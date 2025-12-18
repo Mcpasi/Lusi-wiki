@@ -209,6 +209,9 @@
   const fType = $("#fType");
   const fTags = $("#fTags");
   const fBody = $("#fBody");
+  const fImages = $("#fImages");
+  const fImagesHint = $("#fImagesHint");
+  const fImagesCurrent = $("#fImagesCurrent");
   const btnTheme = $("#btnTheme");
 
   let entries = load();
@@ -257,6 +260,137 @@
       .filter(e => matches(e, q));
   }
 
+  
+
+
+
+Gespräch
+Diffs
+Protokolle
+
+app.js
++103
+-3
+
+@@ -172,112 +172,144 @@
+      if(!raw) return structuredClone(seed);
+      const data = JSON.parse(raw);
+      if(!Array.isArray(data)) return structuredClone(seed);
+      return data;
+    }catch{
+      return structuredClone(seed);
+    }
+  }
+
+  function save(entries){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  }
+
+  // --- UI ---
+  const $ = (s) => document.querySelector(s);
+  const listEl = $("#list");
+  const qEl = $("#q");
+  const resultCount = $("#resultCount");
+  const emptyState = $("#emptyState");
+  const detailEl = $("#detail");
+
+  const dTitle = $("#dTitle");
+  const dType = $("#dType");
+  const dTags = $("#dTags");
+  const dBody = $("#dBody");
+  const dImages = $("#dImages");
+  const dId = $("#dId");
+  const dUpdated = $("#dUpdated");
+
+  const btnNew = $("#btnNew");
+  const btnEdit = $("#btnEdit");
+  const btnDelete = $("#btnDelete");
+
+  const editor = $("#editor");
+  const form = $("#form");
+  const mTitle = $("#mTitle");
+  const fTitle = $("#fTitle");
+  const fType = $("#fType");
+  const fTags = $("#fTags");
+  const fBody = $("#fBody");
+  const fImages = $("#fImages");
+  const fImagesHint = $("#fImagesHint");
+  const fImagesCurrent = $("#fImagesCurrent");
+  const btnTheme = $("#btnTheme");
+
+  let entries = load();
+  let activeId = null;
+  let filter = "all";
+
+  // theme
+  const applyTheme = (t) => {
+    document.documentElement.setAttribute("data-theme", t);
+    localStorage.setItem(THEME_KEY, t);
+    btnTheme.querySelector(".icon").textContent = (t === "light") ? "☀" : "☾";
+  };
+  applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+  btnTheme.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") || "dark";
+    applyTheme(current === "dark" ? "light" : "dark");
+  });
+
+  function typeLabel(t){
+    return ({ figur:"Figur", ort:"Ort", begriff:"Begriff", fraktion:"Fraktion" }[t] || t);
+  }
+  function badgeFor(t){
+    return ({ figur:"F", ort:"O", begriff:"B", fraktion:"R" }[t] || "?");
+  }
+  function norm(s){
+    return (s ?? "").toString().toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+  }
+
+  function matches(e, q){
+    if(!q) return true;
+    const hay = [
+      e.title,
+      e.type,
+      ...(e.tags || []),
+      e.body
+    ].join(" ");
+    return norm(hay).includes(norm(q));
+  }
+
+  function getFiltered(){
+    const q = qEl.value.trim();
+    return entries
+      .slice()
+      .sort((a,b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""))
+      .filter(e => filter === "all" ? true : e.type === filter)
+      .filter(e => matches(e, q));
+  }
+
+  function renderImagesGallery(images){
+    if(!dImages) return;
+    if(!images || images.length === 0){
+      dImages.innerHTML = "";
+      dImages.style.display = "none";
+      return;
+    }
+
+    dImages.style.display = "grid";
+    dImages.innerHTML = "";
+
+    for(const img of images){
+      const fig = document.createElement("figure");
+      const imageEl = document.createElement("img");
+      imageEl.loading = "lazy";
+      imageEl.src = img.data;
+      imageEl.alt = img.name || "Bild";
+
+      const cap = document.createElement("figcaption");
+      cap.className = "image-name";
+      cap.textContent = img.name || "Bild";
+
+      fig.appendChild(imageEl);
+      fig.appendChild(cap);
+      dImages.appendChild(fig);
+    }
+  }
   function renderList(){
     const items = getFiltered();
     resultCount.textContent = items.length + " Treffer";
