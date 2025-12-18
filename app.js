@@ -194,6 +194,7 @@
   const dType = $("#dType");
   const dTags = $("#dTags");
   const dBody = $("#dBody");
+  const dImages = $("#dImages");
   const dId = $("#dId");
   const dUpdated = $("#dUpdated");
 
